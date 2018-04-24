@@ -58,5 +58,5 @@ public final class QueryController implements IQueryController{
    EMAIL        CHAR(50)
 );*/
 
-/*INSERT INTO USER (ID,EMAIL)
+/*INSERT INTO User (ID,EMAIL)
 VALUES (1, 'teste@gmail.com');*/
