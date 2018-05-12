@@ -1,4 +1,5 @@
 package frontend.Screens;
+
 import javax.swing.*;
 
 import backend.QueryController.IQueryController;
@@ -11,20 +12,21 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 
-public class ThirdScreen  extends JFrame implements ActionListener{
+public class ThirdScreen extends JFrame implements ActionListener {
 
     @SuppressWarnings("unused")
     private static IQueryController query;
     private Font titleFont = new Font("Monospaced", Font.BOLD, 30);
-    private static JPanel panel;
+    private JPanel panel;
     private JButton btn1;
     private JButton btn2;
-    private JTextField path_completo = new JTextField(40);
+    private JTextField txtPath = new JTextField(40);
     private String path;
+
     public ThirdScreen(IQueryController _query) {
         super();
         query = _query;
-        
+
         this.setLocation(512, 250);
         this.setTitle("Projeto de Seguranca");
         this.setSize(500, 500);
@@ -36,10 +38,11 @@ public class ThirdScreen  extends JFrame implements ActionListener{
         panel = new JPanel();
         this.panel.setBounds(0, 0, 500, 500);
         this.panel.setBackground(Color.white);
-        //this.path_completo.setPreferredSize(new Dimension(100, 100));
-        path_completo.setBounds(40, 98, 300, 50);
-        this.panel.add(path_completo, BorderLayout.NORTH);
-        
+
+        //this.txtPath.setPreferredSize(new Dimension(100, 100));
+        txtPath.setBounds(40, 98, 300, 50);
+        this.panel.add(txtPath, BorderLayout.NORTH);
+
         JLabel lblTitle = new JLabel("Escolher Certificado");
         lblTitle.setBounds(105, -230, 500, 500);
         lblTitle.setFont(titleFont);
@@ -67,19 +70,19 @@ public class ThirdScreen  extends JFrame implements ActionListener{
     public void actionPerformed(ActionEvent ae) {
 
         if (ae.getSource() == btn1) {
-         
-            JFileChooser chooser=new JFileChooser();
+            JFileChooser chooser = new JFileChooser();
             chooser.showOpenDialog(null);
-            File f= chooser.getSelectedFile();
-            String filename=f.getAbsolutePath();
-            path_completo.setText(filename);
-            this.path=filename;
+            File f = chooser.getSelectedFile();
+            String filename = f.getAbsolutePath();
+            txtPath.setText(filename);
+            this.path = filename;
             System.out.println(path);
-        } else if (ae.getSource() == btn2) {
 
+        } else if (ae.getSource() == btn2) {
             System.out.println(btn2.getText());
             this.dispose();
             InterfaceController.startForthScreen();
+
         } else {
             //Erro inesperado!
         }
