@@ -1,0 +1,13 @@
+CREATE TABLE User(
+   ID INT PRIMARY KEY     NOT NULL,
+   EMAIL        CHAR(50)
+, Hash char(51));
+
+// GACEGO palavra escolhida
+// $31$16$y_ZiE8q1yhvSR4dxcIxImeMBdnYj6D02t1w1qrzDRL0
+
+
+/*INSERT INTO User (ID,EMAIL)
+VALUES (1, 'teste@gmail.com' , '$31$16$y_ZiE8q1yhvSR4dxcIxImeMBdnYj6D02t1w1qrzDRL0');*/
+
+sqlite> UPDATE USER SET Hash = '$31$16$y_ZiE8q1yhvSR4dxcIxImeMBdnYj6D02t1w1qrzDRL0' WHERE ID=1;

@@ -18,7 +18,7 @@ public class StartConnection {
 			Class.forName("org.sqlite.JDBC");			
 		     // create a database connection
 			// C:\Users\tassi\eclipse-workspace\TrabLab_3
-			connection = DriverManager.getConnection("jdbc:sqlite:C:/Projetos Netbeans/marciuschato/src/segurancaBD.db");
+			connection = DriverManager.getConnection("jdbc:sqlite:../segurancaBD");
 			setController(new QueryController(connection));
 			System.out.println("Conection success");
 		} catch (SQLException e) {

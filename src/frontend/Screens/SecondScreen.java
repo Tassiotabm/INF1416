@@ -8,12 +8,17 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class SecondScreen extends JFrame implements ActionListener {
 
-    @SuppressWarnings("unused")
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	
+	private static final String[][] matrix = new String[3][3];
+	private static int clickCount = 0;
+	
     private static IQueryController query;
     private Font titleFont = new Font("Monospaced", Font.BOLD, 30);
     private static JPanel panel;
@@ -26,7 +31,9 @@ public class SecondScreen extends JFrame implements ActionListener {
 
     public SecondScreen(IQueryController _query) {
         super();
+        
         query = _query;
+        
         initializeFonemas();
 
         this.setLocation(512, 250);
@@ -38,43 +45,43 @@ public class SecondScreen extends JFrame implements ActionListener {
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         panel = new JPanel();
-        this.panel.setBounds(0, 0, 500, 500);
-        this.panel.setBackground(Color.WHITE);
+        SecondScreen.panel.setBounds(0, 0, 500, 500);
+        SecondScreen.panel.setBackground(Color.WHITE);
 
         JLabel lblTitle = new JLabel("Digite sua senha");
         lblTitle.setBounds(105, -230, 500, 500);
         lblTitle.setFont(titleFont);
-        this.panel.add(lblTitle);
+        SecondScreen.panel.add(lblTitle);
 
         ArrayList<String> btnRandomFonemas = generateRandomFonemas();
 
         btn1 = new JButton(btnRandomFonemas.get(0));
         btn1.setBounds(15, 100, 100, 50);
         btn1.addActionListener(this);
-        this.panel.add(btn1);
+        SecondScreen.panel.add(btn1);
 
         btn2 = new JButton(btnRandomFonemas.get(1));
         btn2.setBounds(380, 100, 100, 50);
         btn2.addActionListener(this);
-        this.panel.add(btn2);
+        SecondScreen.panel.add(btn2);
 
         btn3 = new JButton(btnRandomFonemas.get(2));
         btn3.setBounds(15, 240, 100, 50);
         btn3.addActionListener(this);
-        this.panel.add(btn3);
+        SecondScreen.panel.add(btn3);
 
         btn4 = new JButton(btnRandomFonemas.get(3));
         btn4.setBounds(380, 240, 100, 50);
         btn4.addActionListener(this);
-        this.panel.add(btn4);
+        SecondScreen.panel.add(btn4);
 
         btn5 = new JButton(btnRandomFonemas.get(4));
         btn5.setBounds(200, 380, 100, 50);
         btn5.addActionListener(this);
-        this.panel.add(btn5);
+        SecondScreen.panel.add(btn5);
 
-        this.panel.setLayout(null);
-        this.panel.setVisible(true);
+        SecondScreen.panel.setLayout(null);
+        SecondScreen.panel.setVisible(true);
         this.getContentPane().add(panel);
         this.setLayout(null);
         this.setVisible(true);
@@ -83,35 +90,38 @@ public class SecondScreen extends JFrame implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent ae) {
-
+    	
         if (ae.getSource() == btn1) {
-            //Chama método da fachada que chama método que guarda informações numa matriz no modelo
-            System.out.println(btn1.getText());
+        	SecondScreen.addToMatrix(btn1.getText());
             this.dispose();
             InterfaceController.startSecondScreen();
         } else if (ae.getSource() == btn2) {
-            //Chama método da fachada que chama método que guarda informações numa matriz no modelo
-            System.out.println(btn2.getText());
+        	SecondScreen.addToMatrix(btn2.getText());
             this.dispose();
             InterfaceController.startSecondScreen();
         } else if (ae.getSource() == btn3) {
-            //Chama método da fachada que chama método que guarda informações numa matriz no modelo
-            System.out.println(btn3.getText());
+        	SecondScreen.addToMatrix(btn3.getText());
             this.dispose();
             InterfaceController.startSecondScreen();
         } else if (ae.getSource() == btn4) {
-            //Chama método da fachada que chama método que guarda informações numa matriz no modelo
-            System.out.println(btn4.getText());
+        	SecondScreen.addToMatrix(btn4.getText());
             this.dispose();
             InterfaceController.startSecondScreen();
         } else if (ae.getSource() == btn5) {
-            //Chama método da fachada que chama método que guarda informações numa matriz no modelo
-            System.out.println(btn5.getText());
+        	SecondScreen.addToMatrix(btn5.getText());
             this.dispose();
             InterfaceController.startSecondScreen();
         } else {
-            //Erro inesperado!
+        	
         }
+    	
+        SecondScreen.clickCount++;
+        
+        if(SecondScreen.clickCount == 3) {
+        	query.checkPassword(matrix);
+        	SecondScreen.clickCount = 0;
+        }
+
     }
 
     private void initializeFonemas() {
@@ -130,6 +140,19 @@ public class SecondScreen extends JFrame implements ActionListener {
         fonemas.add("GA");
         fonemas.add("GE");
         fonemas.add("GO");
+    }
+    
+    private static void addToMatrix(String fonema) {
+    	String[] parts = fonema.split("-");
+
+    	matrix [clickCount][0] = parts[0];
+    	matrix [clickCount][1] = parts[1];
+    	matrix [clickCount][2] = parts[2];
+    	
+    	for(int i = 0; i< matrix[clickCount].length ; i++ ) {
+        	System.out.print(matrix[clickCount][i]);
+    	}
+    	System.out.println(" ");
     }
 
     private ArrayList<String> generateRandomFonemas() {

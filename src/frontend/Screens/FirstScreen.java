@@ -7,6 +7,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.*;
 import backend.QueryController.IQueryController;
+import frontend.AuthenticationUser;
 import frontend.InterfaceController;
 
 @SuppressWarnings("serial")
@@ -50,6 +51,7 @@ public class FirstScreen extends JFrame implements ActionListener {
             try {
                 if (query.findUser(login) == true) {
                     loginframe.setVisible(false);
+                    AuthenticationUser.setEmail(login);
                     InterfaceController.startSecondScreen();
                 } else {
                     JOptionPane.showMessageDialog(null, "Login Incorreto",
