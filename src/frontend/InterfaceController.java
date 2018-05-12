@@ -13,18 +13,19 @@ public abstract class InterfaceController {
     public static void init(IQueryController _controller) {
         controller = _controller;
         new FirstScreen(controller);
-       
     }
 
     public static void startSecondScreen() {
         new SecondScreen(controller);
     }
-    
+
     public static void startThirdScreen() {
         new ThirdScreen(controller);
     }
-    public static void startForthScreen() {
-        new ForthScreen(controller);
-    }
 
+    //TODO: colocar valores válidos não marretados como parametro para o construtor da FourthScreen
+    public static void startForthScreen() {
+        new ForthScreen(controller, "Teste", "Administrator", "Teste", 1);
+        //new ForthScreen(controller,login, grupo, nome, qtdUsuarios);
+    }
 }
