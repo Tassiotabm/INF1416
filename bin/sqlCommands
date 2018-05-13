@@ -1,13 +1,45 @@
-CREATE TABLE User(
-   ID INT PRIMARY KEY     NOT NULL,
-   EMAIL        CHAR(50)
-, Hash char(51));
+CREATE TABLE `Mensagens` (
+	`Codigo` DECIMAL NOT NULL,
+	`Mensagem` varchar(180) NOT NULL,
+	PRIMARY KEY (`Codigo`)
+);
+
+CREATE TABLE `Logs` (
+	`ID` BINARY NOT NULL,
+	`Hora` DATETIME NOT NULL,
+	`User` VARCHAR(255),
+	`File` VARCHAR(255),
+	`Mensagens_ID` VARCHAR(255) NOT NULL,
+	PRIMARY KEY (`ID`)
+);
+
+CREATE TABLE `User` (
+	`User_ID` varchar NOT NULL,
+	`Hashed_Password` varchar NOT NULL,
+	`Password_Key` varchar NOT NULL,
+	`Email` varchar NOT NULL,
+	`Login` VARCHAR(255) NOT NULL,
+	`Name` VARCHAR(255) NOT NULL,
+	`Certificate` BINARY NOT NULL,
+	`Forgot_Password` BINARY NOT NULL,
+	PRIMARY KEY (`User_ID`)
+);
+
+CREATE TABLE `Acess` (
+	`Acess_ID` DECIMAL NOT NULL,
+	`User_ID` DECIMAL NOT NULL,
+	`Login_Number` DECIMAL NOT NULL,
+	PRIMARY KEY (`Acess_ID`)
+);
+
+ALTER TABLE `Logs` ADD CONSTRAINT `Logs_fk0` FOREIGN KEY (`Mensagens_ID`) REFERENCES `Mensagens`(`Codigo`);
+
+ALTER TABLE `Acess` ADD CONSTRAINT `Acess_fk0` FOREIGN KEY (`User_ID`) REFERENCES `User`(`User_ID`);
 
 // GACEGO palavra escolhida
 // $31$16$y_ZiE8q1yhvSR4dxcIxImeMBdnYj6D02t1w1qrzDRL0
 
 
-/*INSERT INTO User (ID,EMAIL)
-VALUES (1, 'teste@gmail.com' , '$31$16$y_ZiE8q1yhvSR4dxcIxImeMBdnYj6D02t1w1qrzDRL0');*/
+/*INSERT INTO User (ID,EMAIL) VALUES (1, 'teste@gmail.com' , '$31$16$y_ZiE8q1yhvSR4dxcIxImeMBdnYj6D02t1w1qrzDRL0');*/
 
 sqlite> UPDATE USER SET Hash = '$31$16$y_ZiE8q1yhvSR4dxcIxImeMBdnYj6D02t1w1qrzDRL0' WHERE ID=1;

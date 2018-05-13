@@ -1,7 +1,9 @@
 package backend;
 
 public class Usuario {
-	private  String grupo,caminhoCertificado,senha;
+	private String grupo;
+	private String caminhoCertificado;
+	private String senha;
 	private int totalAcessosDoUsuario;
 	
 	public Usuario(String grupo, String caminhoCertificado,String senha) {
@@ -42,8 +44,4 @@ public class Usuario {
 	public void setSenha(String senha) {
 		this.senha = senha;
 	}
-
-	
-	
-	
 }
