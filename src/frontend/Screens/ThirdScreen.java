@@ -3,6 +3,7 @@ package frontend.Screens;
 import javax.swing.*;
 
 import backend.QueryController.IQueryController;
+import frontend.AuthenticationUser;
 import frontend.InterfaceController;
 
 import java.awt.BorderLayout;
@@ -21,6 +22,7 @@ public class ThirdScreen extends JFrame implements ActionListener {
     private JButton btn1;
     private JButton btn2;
     private JTextField txtPath = new JTextField(40);
+    private JTextField secret = new JTextField(40);
     private String path;
 
     public ThirdScreen(IQueryController _query) {
@@ -43,7 +45,7 @@ public class ThirdScreen extends JFrame implements ActionListener {
         txtPath.setBounds(40, 98, 300, 50);
         this.panel.add(txtPath, BorderLayout.NORTH);
 
-        JLabel lblTitle = new JLabel("Escolher Certificado");
+        JLabel lblTitle = new JLabel("Indique a assinatura");
         lblTitle.setBounds(105, -230, 500, 500);
         lblTitle.setFont(titleFont);
         this.panel.add(lblTitle);
@@ -58,12 +60,19 @@ public class ThirdScreen extends JFrame implements ActionListener {
         btn2.addActionListener(this);
         this.panel.add(btn2);
 
+        secret.setBounds(40,200, 300, 50);
+        this.panel.add(secret, BorderLayout.NORTH);
+        
+        JLabel lblSecret = new JLabel("Pergunta Secreta");
+        lblSecret.setBounds(105,-75, 500, 500);
+        lblSecret.setFont(titleFont);
+        this.panel.add(lblSecret);
+
         this.panel.setLayout(null);
         this.panel.setVisible(true);
         this.getContentPane().add(panel);
         this.setLayout(null);
         this.setVisible(true);
-
     }
 
     @Override
@@ -77,6 +86,12 @@ public class ThirdScreen extends JFrame implements ActionListener {
             txtPath.setText(filename);
             this.path = filename;
             System.out.println(path);
+            if(query.checkCertificate(filename, this.secret.getText(), AuthenticationUser.getLogin())) {
+                InterfaceController.startForthScreen();
+            }else {
+                JOptionPane.showMessageDialog(null, "Assinatura ou chave secreta inválida",
+                        "Acess denied", JOptionPane.INFORMATION_MESSAGE);
+            }
 
         } else if (ae.getSource() == btn2) {
             System.out.println(btn2.getText());

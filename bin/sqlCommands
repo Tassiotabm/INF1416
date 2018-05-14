@@ -16,12 +16,10 @@ CREATE TABLE `Logs` (
 CREATE TABLE `User` (
 	`User_ID` varchar NOT NULL,
 	`Hashed_Password` varchar NOT NULL,
+	`Login` varchar NOT NULL,
 	`Password_Key` varchar NOT NULL,
-	`Email` varchar NOT NULL,
-	`Login` VARCHAR(255) NOT NULL,
-	`Name` VARCHAR(255) NOT NULL,
-	`Certificate` BINARY NOT NULL,
-	`Forgot_Password` BINARY NOT NULL,
+	`Certificate` varchar NOT NULL,
+    `Group` varchar NOT NULL,
 	PRIMARY KEY (`User_ID`)
 );
 

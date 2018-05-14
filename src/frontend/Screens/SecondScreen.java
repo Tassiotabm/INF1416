@@ -2,6 +2,7 @@ package frontend.Screens;
 
 import javax.swing.*;
 import backend.QueryController.IQueryController;
+import frontend.AuthenticationUser;
 import frontend.InterfaceController;
 import java.awt.Color;
 import java.awt.Font;
@@ -118,8 +119,14 @@ public class SecondScreen extends JFrame implements ActionListener {
         SecondScreen.clickCount++;
         
         if(SecondScreen.clickCount == 3) {
-        	query.checkPassword(matrix);
         	SecondScreen.clickCount = 0;
+        	if(query.validatePassword(AuthenticationUser.getLogin(),matrix)) {
+                InterfaceController.startThirdScreen();
+            } else {
+                JOptionPane.showMessageDialog(null, "Senha incorreta",
+                        "Acess denied", JOptionPane.INFORMATION_MESSAGE);
+                
+            }
         }
 
     }

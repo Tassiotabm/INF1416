@@ -51,7 +51,7 @@ public class FirstScreen extends JFrame implements ActionListener {
             try {
                 if (query.findUser(login) == true) {
                     loginframe.setVisible(false);
-                    AuthenticationUser.setEmail(login);
+                    AuthenticationUser.setLogin(login);
                     InterfaceController.startSecondScreen();
                 } else {
                     JOptionPane.showMessageDialog(null, "Login Incorreto",

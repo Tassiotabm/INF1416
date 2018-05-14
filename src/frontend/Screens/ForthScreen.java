@@ -3,8 +3,8 @@ package frontend.Screens;
 import javax.swing.*;
 import javax.swing.table.TableCellEditor;
 
+import Model.Usuario;
 import backend.ModeloTabelaArquivosSecretos;
-import backend.Usuario;
 import backend.QueryController.IQueryController;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -364,7 +364,8 @@ public class ForthScreen extends JFrame implements ActionListener {
 					this.panel.repaint();
 					break;
 				}
-				Usuario usu = new Usuario(grupo, path, senha);
+				Usuario user = new Usuario(grupo, path, senha);
+				query.registerUser(user);
 				// deveria enviar esse usuario para algum
 				// lugar////////////////////////////////////////////////////////////////////////////////////////////////
 			}

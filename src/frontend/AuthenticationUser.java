@@ -2,27 +2,18 @@ package frontend;
 
 public abstract class AuthenticationUser {
 
-	private static String Email;
-	private static String Hash;
+	private static String Login;
 	
 	public  AuthenticationUser() {
 		// TODO Auto-generated constructor stub
 	}
 
-	public static String getEmail() {
-		return Email;
+	public static String getLogin() {
+		return Login;
 	}
 
-	public static void setEmail(String email) {
-		Email = email;
-	}
-
-	public static String getHash() {
-		return Hash;
-	}
-
-	public static void setHash(String hash) {
-		Hash = hash;
+	public static void setLogin(String login) {
+		Login = login;
 	}
 
 }

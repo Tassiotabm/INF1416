@@ -4,12 +4,11 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Random;
 import java.util.UUID;
 import java.util.Vector;
-
+import Model.Usuario;
 import backend.PasswordAuthentication;
-import backend.Usuario;
-import frontend.AuthenticationUser;
 
 public final class QueryController implements IQueryController{
 
@@ -23,14 +22,14 @@ public final class QueryController implements IQueryController{
         this.uuid = UUID.randomUUID();
 	}
 
-	public boolean findUser(String email) {
+	public boolean findUser(String login) {
 		
 		try {
-			System.out.println("Email recebido para query:"+email);
+			System.out.println("Email recebido para query:"+login);
 	 	    ResultSet rs = null;
 	 	    
 	   	  	PreparedStatement statement = vetordeStatement.get(0);
-	    	statement.setString(1,email);
+	    	statement.setString(1,login);
 		    statement.setQueryTimeout(30);  // set timeout to 30 sec.
 		    rs = statement.executeQuery();
 		    if(rs.getInt(1) == 1){		        	 	    
@@ -44,23 +43,61 @@ public final class QueryController implements IQueryController{
 		}
 	}
 	
-	private String getUserHashedPassword(String email) {
+	public boolean validatePassword(String login, String [][] passMatrix) {
 		try {
-			System.out.println("Email recebido para query:"+email);
+			System.out.println("Email recebido para query:"+login);
 	 	    ResultSet rs = null;
 	 	    
 	   	  	PreparedStatement statement = vetordeStatement.get(1);
-	    	statement.setString(1,email);
+	    	statement.setString(1,login);
 		    statement.setQueryTimeout(30);  // set timeout to 30 sec.
 		    rs = statement.executeQuery();
-		    if(!rs.getString(1).isEmpty()){		        	 	    
-		    	return rs.getString(1);
+		    if(!rs.getString(1).isEmpty()){		
+		    	
+		    	String hashedPwDb = rs.getString(1);
+		    	int dbSalt = rs.getInt(2);
+		    	
+				for(int i =0; i<3;i++) {
+					for(int j = 0; j<3;j++) {
+						for(int z = 0; z<3; z++) {
+							String password = passMatrix[0][i] + passMatrix[1][j]+ passMatrix[2][z];
+					   	  	String hashedPass = PasswordAuthentication.generatePasswordHash(password, dbSalt);
+					    	if(hashedPass.equals(hashedPwDb)) {
+					    		return true;
+					    	}
+						}
+					}
+				}
+		    	
+		   	  	
+
 		   }else {
-			   return null;
+			   return false;
 		   }		    	
 		}catch(Exception ex) {
 			System.out.println(ex);
-			return null;
+			return false;
+		}
+		return false;
+	}
+	
+	public boolean checkCertificate(String certificatePath, String secretKey, String login) {
+		try {
+	 	    ResultSet rs = null;
+	   	  	PreparedStatement statement = vetordeStatement.get(6);
+	    	statement.setString(1,login);
+		    statement.setQueryTimeout(30);  // set timeout to 30 sec.
+		    rs = statement.executeQuery();
+		    if(!rs.getString(1).isEmpty()){
+		    	//pegar o certificado com path
+		    	//validar o certificado
+		    	return true;
+		   }else {
+			   return false;
+		   }		    	
+		}catch(Exception ex) {
+			System.out.println(ex);
+			return false;
 		}
 	}
 	
@@ -73,13 +110,17 @@ public final class QueryController implements IQueryController{
 	   	  	//O nome do usuário e o login name devem ser extraídos do campo de Sujeito do certificado
 	   	  	
 	        String randomUUIDString = uuid.toString();
+	        Random rand = new Random();
+	   	  	Integer salt = rand.nextInt(999999999);
+	   	  	String hashedPass = PasswordAuthentication.generatePasswordHash(user.getSenha(), salt);
+	        String grupo = user.getGrupo();
 	   	  	
 	    	statement.setString(1,randomUUIDString); // ID
-	    	statement.setString(2,user.getSenha()); // HashedPassword
-	    	statement.setString(3,user.getSenha()); // PasswordKey
-	    	statement.setString(4,"Login"); // Login	
-	    	statement.setString(6,"Name"); // Name
-	    	statement.setString(7,user.getCaminhoCertificado()); // Certificate
+	    	statement.setString(2,hashedPass); // HashedPassword
+	    	statement.setString(3,"Gmail");  // Tem que pegar do certificado!
+	    	statement.setInt(4,salt); // PasswordKey
+	    	statement.setString(5,user.getCaminhoCertificado()); // Certificate
+	    	statement.setString(6,grupo);
 	    	
 		    statement.setQueryTimeout(30);  // set timeout to 30 sec.
 		    statement.executeUpdate();
@@ -114,53 +155,6 @@ public final class QueryController implements IQueryController{
 		}
 	}
 	
-	public boolean checkCertificate(String certificatePath, String login) {
-		try {
-			System.out.println("Email recebido para query:"+login);
-	 	    ResultSet rs = null;
-	 	    
-	   	  	PreparedStatement statement = vetordeStatement.get(1);
-	    	statement.setString(1,login);
-		    statement.setQueryTimeout(30);  // set timeout to 30 sec.
-		    rs = statement.executeQuery();
-		    if(!rs.getString(1).isEmpty()){
-		    	//pegar o certificado com path
-		    	//validar o certificado
-		    	return true;
-		   }else {
-			   return false;
-		   }		    	
-		}catch(Exception ex) {
-			System.out.println(ex);
-			return false;
-		}
-	}
-	
-	public boolean checkPassword(String [][] matrix) {
-		//			char [] password
-		//        	String matrixString = matrix[1][0] + matrix[1][1]+ matrix[1][2];
-    	//			char[] string = matrixString.toCharArray();
-		String hashedPassword = this.getUserHashedPassword(AuthenticationUser.getEmail());
-		
-		if(hashedPassword.isEmpty())
-			return false;
-		
-		for(int i =0; i<3;i++) {
-			for(int j = 0; j<3;j++) {
-				for(int z = 0; z<3; z++) {
-					String matrixString = matrix[0][i] + matrix[1][j]+ matrix[2][z];
-					char[] string = matrixString.toCharArray();
-					/*if(PasswordAuthentication.gets(string, hashedPassword)) {
-						System.out.println("HUE");
-						return true;
-					}*/	
-				}
-			}
-		}
-			
-		return false;
-	}
-	
 	public void prepareStatments(){
 		try {
 			//0
@@ -184,7 +178,7 @@ public final class QueryController implements IQueryController{
 			//6
 			vetordeStatement.add(connection.prepareStatement("select Certificate from User where LOGIN=?"));
 			//7
-			vetordeStatement.add(connection.prepareStatement("INSERT INTO User VALUES (?,?,?,?,?,?,?)"));
+			vetordeStatement.add(connection.prepareStatement("INSERT INTO User VALUES (?,?,?,?,?,?)"));
 			//8
 			vetordeStatement.add(connection.prepareStatement("UPDATE  User SET Password_Key=?,Hashed_Password=?,Certificate=?"
 					+ "Where LOGIN=?"));
