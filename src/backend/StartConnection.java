@@ -20,6 +20,7 @@ public class StartConnection {
 			// C:\Users\tassi\eclipse-workspace\TrabLab_3
 			connection = DriverManager.getConnection("jdbc:sqlite:segurancaDB");
 			setController(new QueryController(connection));
+			controller.RegisterLog(null,null,1001);
 			System.out.println("Conection success");
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block

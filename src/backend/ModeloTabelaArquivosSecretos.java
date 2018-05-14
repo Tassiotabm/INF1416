@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import javax.swing.table.AbstractTableModel;
 
 public class ModeloTabelaArquivosSecretos extends AbstractTableModel {
-	private ArrayList linhas=null;
+	private ArrayList<?> linhas=null;
 	private String[] colunas=null;
 	
 	
@@ -20,7 +20,7 @@ public class ModeloTabelaArquivosSecretos extends AbstractTableModel {
 		
 		return colunas.length;
 	}
-	public ArrayList getLinhas() {
+	public ArrayList<?> getLinhas() {
 		return linhas;
 	}
 

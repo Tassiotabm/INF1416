@@ -1,13 +1,20 @@
 package backend.QueryController;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.Random;
 import java.util.UUID;
 import java.util.Vector;
 import Model.Usuario;
+import backend.CertificateController;
+import backend.KeyAuthentication;
 import backend.PasswordAuthentication;
 
 public final class QueryController implements IQueryController{
@@ -15,11 +22,14 @@ public final class QueryController implements IQueryController{
 	private static Vector <PreparedStatement> vetordeStatement = new Vector<PreparedStatement>();
 	private Connection connection;
 	private UUID uuid;
+	private KeyAuthentication auth;
+	private CertificateController certificate;
 	
 	public QueryController(Connection _connection) {
 		this.connection = _connection;
 		this.prepareStatments();
         this.uuid = UUID.randomUUID();
+        this.auth = new KeyAuthentication();
 	}
 
 	public boolean findUser(String login) {
@@ -81,20 +91,26 @@ public final class QueryController implements IQueryController{
 		return false;
 	}
 	
-	public boolean checkCertificate(String certificatePath, String secretKey, String login) {
+	public boolean checkCertificate(String privateKeyPath, String secretKey, String login) {
 		try {
 	 	    ResultSet rs = null;
 	   	  	PreparedStatement statement = vetordeStatement.get(6);
 	    	statement.setString(1,login);
 		    statement.setQueryTimeout(30);  // set timeout to 30 sec.
+		    
 		    rs = statement.executeQuery();
-		    if(!rs.getString(1).isEmpty()){
-		    	//pegar o certificado com path
-		    	//validar o certificado
-		    	return true;
-		   }else {
-			   return false;
-		   }		    	
+		    
+		    String certificatePath = rs.getString(1);
+	        this.certificate = new CertificateController(certificatePath);
+	        
+	        Path path = Paths.get(privateKeyPath);
+	        byte[] encodedPrivateKey = Files.readAllBytes(path);
+	        
+	        if(auth.isSign(auth.decryptPrivateKey(encodedPrivateKey, secretKey), this.certificate.getPublicKey())) {
+	        	return true;
+	        }
+	        return false;
+		    // auth.retrivePublicKey(certificate); retorno de bytes do back estava errado....		    
 		}catch(Exception ex) {
 			System.out.println(ex);
 			return false;
@@ -113,7 +129,7 @@ public final class QueryController implements IQueryController{
 	        Random rand = new Random();
 	   	  	Integer salt = rand.nextInt(999999999);
 	   	  	String hashedPass = PasswordAuthentication.generatePasswordHash(user.getSenha(), salt);
-	        String grupo = user.getGrupo();
+	   	  	String grupo = user.getGrupo();
 	   	  	
 	    	statement.setString(1,randomUUIDString); // ID
 	    	statement.setString(2,hashedPass); // HashedPassword
@@ -133,16 +149,18 @@ public final class QueryController implements IQueryController{
 		}
 	}
 	
-	public boolean editUser(Usuario user) {
-		try {
-			System.out.println("Email recebido para query:"+user);
-	 	    
+	public boolean editUser(Usuario user,String login) {
+		try {	 	    
 	   	  	PreparedStatement statement = vetordeStatement.get(8);
 	   	  	
-	    	statement.setString(1,user.getSenha()); // HashedPassword
-	    	statement.setString(2,user.getSenha()); // PasswordKey
-	    	statement.setString(3,user.getCaminhoCertificado()); // Certificate
-	    	statement.setString(4,"login"); // 
+	        Random rand = new Random();
+	   	  	Integer salt = rand.nextInt(999999999);
+	   	  	String hashedPass = PasswordAuthentication.generatePasswordHash(user.getSenha(), salt);
+	   	  	
+	    	statement.setString(1,hashedPass); // HashedPassword
+	    	statement.setInt(2,salt); // PasswordKey
+	    	statement.setString(3,user.getCaminhoCertificado()); // Certificate 
+	    	statement.setString(4,"Gmail"); //user login
 	    	
 		    statement.setQueryTimeout(30);  // set timeout to 30 sec.
 		    statement.executeUpdate();
@@ -152,6 +170,40 @@ public final class QueryController implements IQueryController{
 		}catch(Exception ex) {
 			System.out.println(ex);
 			return false;
+		}
+	}
+	
+	public int GetUsersCount() {
+		try {
+	 	    ResultSet rs = null;
+	   	  	PreparedStatement statement = vetordeStatement.get(5);
+		    statement.setQueryTimeout(30);  // set timeout to 30 sec.
+		    rs = statement.executeQuery();
+		    
+		    return rs.getInt(1);
+	    	
+		}catch(Exception ex) {
+			System.out.println(ex);
+			return 0;
+		}
+	}
+
+	public void RegisterLog(String login,String filePath, int messageId) {
+		try {
+	   	  	PreparedStatement statement = vetordeStatement.get(9);
+	   	    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	   	    Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+	   	    String ts = sdf.format(timestamp);
+	   	 	statement.setString(1,uuid.toString()); // ID
+	    	statement.setString(2,ts); // ID
+	    	statement.setString(3,login);
+	    	statement.setString(4,filePath);
+	    	statement.setInt(5,messageId);
+		    statement.setQueryTimeout(30); 
+		    statement.executeUpdate();
+		}  catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 	
@@ -174,7 +226,7 @@ public final class QueryController implements IQueryController{
 			//4
 			vetordeStatement.add(connection.prepareStatement("select User_ID from User where LOGIN=?"));
 			//5
-			vetordeStatement.add(connection.prepareStatement("select User_ID from User where LOGIN=?"));
+			vetordeStatement.add(connection.prepareStatement("select count(*) User"));
 			//6
 			vetordeStatement.add(connection.prepareStatement("select Certificate from User where LOGIN=?"));
 			//7
@@ -182,6 +234,11 @@ public final class QueryController implements IQueryController{
 			//8
 			vetordeStatement.add(connection.prepareStatement("UPDATE  User SET Password_Key=?,Hashed_Password=?,Certificate=?"
 					+ "Where LOGIN=?"));
+			//9
+			vetordeStatement.add(connection.prepareStatement("INSERT INTO Logs VALUES (?,?,?,?,?)"));
+			//10
+			vetordeStatement.add(connection.prepareStatement("select * from Logs Order by Hora"));
+
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

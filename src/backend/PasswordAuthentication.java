@@ -1,22 +1,9 @@
 package backend;
 
-import javax.crypto.SecretKey;
-import javax.crypto.SecretKeyFactory;
-import javax.crypto.spec.PBEKeySpec;
-
-import org.apache.commons.codec.digest.DigestUtils;
-
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
 
-/*Valor_Armazenado = HEX(HASH_SHA1(senha_texto_plano + SALT))
-HEX = representação hexadecimal.
-HASH_SHA1 = função hash SHA-1.
-+ = concatenação de string.
-senha_texto_plano = senha em texto plano (string).
-SALT = valor aleatório composto de 10 caracteres do conjunto [A-Z][a-z][0-9] (string)*/
 
 public abstract class PasswordAuthentication
 {

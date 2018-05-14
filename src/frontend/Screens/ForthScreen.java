@@ -6,6 +6,8 @@ import javax.swing.table.TableCellEditor;
 import Model.Usuario;
 import backend.ModeloTabelaArquivosSecretos;
 import backend.QueryController.IQueryController;
+import frontend.AuthenticationUser;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -30,13 +32,14 @@ public class ForthScreen extends JFrame implements ActionListener {
 	private JButton btnSair;
 	private JButton btnOk;
 	private JButton btnListar;
-
+	private boolean editFlag = false;
 	private JLabel lblLogin;
 	private JLabel lblGrupo;
 	private JLabel lblNome;
 	private JLabel lblQtd;
 	private JTextField txtPath = new JTextField(40);
 	private String[] listaGrupo = new String[] { "Administrador", "Usuário" };
+	@SuppressWarnings("unchecked")
 	private JComboBox boxGrupo = new JComboBox(listaGrupo);
 	// private JTextField txtGrupo = new JTextField(40);
 	private JTextField txtPassword = new JTextField(40);
@@ -65,7 +68,7 @@ public class ForthScreen extends JFrame implements ActionListener {
 		this.login = login;
 		this.gpo = grupo;
 		this.nome = nome;
-		this.qtdUsuariosDoSistema = qtdUsuariosDoSistema;
+		this.qtdUsuariosDoSistema = query.GetUsersCount();
 		this.totalAcessosDoUsuario = totalAcessosDoUsuario;
 		this.totalConsultaDoUsuario = totalConsultaDoUsuario;
 		
@@ -364,10 +367,14 @@ public class ForthScreen extends JFrame implements ActionListener {
 					this.panel.repaint();
 					break;
 				}
-				Usuario user = new Usuario(grupo, path, senha);
-				query.registerUser(user);
-				// deveria enviar esse usuario para algum
-				// lugar////////////////////////////////////////////////////////////////////////////////////////////////
+				if(editFlag) {
+					Usuario user = new Usuario(grupo, path, senha);
+					query.editUser(user, AuthenticationUser.getLogin());
+				}else {
+					Usuario user = new Usuario(grupo, path, senha);
+					query.registerUser(user);
+
+				}
 			}
 		} else if (ae.getSource() == btnCancelar) {
 			this.dispose();
@@ -375,6 +382,7 @@ public class ForthScreen extends JFrame implements ActionListener {
 
 		} else if (ae.getSource() == btnAlterar) {
 
+			editFlag = true;
 			flag_cadastrar_ou_alterar = false;
 			this.panel.remove(btnCadastrar);
 			this.panel.remove(btnAlterar);

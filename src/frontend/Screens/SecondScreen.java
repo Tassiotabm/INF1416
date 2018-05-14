@@ -34,7 +34,8 @@ public class SecondScreen extends JFrame implements ActionListener {
         super();
         
         query = _query;
-        
+        query.RegisterLog(AuthenticationUser.getLogin(), null , 3001);
+
         initializeFonemas();
 
         this.setLocation(512, 250);
@@ -122,7 +123,11 @@ public class SecondScreen extends JFrame implements ActionListener {
         	SecondScreen.clickCount = 0;
         	if(query.validatePassword(AuthenticationUser.getLogin(),matrix)) {
                 InterfaceController.startThirdScreen();
+                query.RegisterLog(AuthenticationUser.getLogin(), null , 3002);
+                query.RegisterLog(AuthenticationUser.getLogin(), null , 3003);
+
             } else {
+                query.RegisterLog(AuthenticationUser.getLogin(), null , 4003);
                 JOptionPane.showMessageDialog(null, "Senha incorreta",
                         "Acess denied", JOptionPane.INFORMATION_MESSAGE);
                 

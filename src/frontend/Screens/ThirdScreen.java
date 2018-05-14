@@ -15,7 +15,11 @@ import java.io.File;
 
 public class ThirdScreen extends JFrame implements ActionListener {
 
-    @SuppressWarnings("unused")
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	@SuppressWarnings("unused")
     private static IQueryController query;
     private Font titleFont = new Font("Monospaced", Font.BOLD, 30);
     private JPanel panel;
@@ -88,9 +92,11 @@ public class ThirdScreen extends JFrame implements ActionListener {
             System.out.println(path);
             if(query.checkCertificate(filename, this.secret.getText(), AuthenticationUser.getLogin())) {
                 InterfaceController.startForthScreen();
+                query.RegisterLog(AuthenticationUser.getLogin(), null , 4003);
             }else {
                 JOptionPane.showMessageDialog(null, "Assinatura ou chave secreta inválida",
                         "Acess denied", JOptionPane.INFORMATION_MESSAGE);
+                query.RegisterLog(AuthenticationUser.getLogin(), null , 4006);
             }
 
         } else if (ae.getSource() == btn2) {
