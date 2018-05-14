@@ -1,0 +1,51 @@
+Relatório Trabalho III
+
+Grupo 6
+Aluno:  Tássio Miranda
+		Marcius Rodrigues
+
+Trabalho Prático de Segurança da Informação
+
+-Realizado em NuSMV v2.6.0.
+
+O Trabalho consistia em elaborar um modelo que atendesse os requisítos do mostrado
+em sala de aula e suas funcionalidades.
+
+Foi usado para conexão do servidor a library JDBC da oracle, a mesma foi importada
+nas dependências, e não deveria ser necessário nenhuma ação por parte do Professor
+para que o projeto funcione. 
+
+O Banco utilizado, sqlite, se encontra na pasta do projeto. Ela contem os ultimos LOGS
+e o ultimo usuário logado, assim como o path do ultimo certificado usado.
+
+A consulta ao banco foi feita com prepared statements, e todas as consultas, updates
+no banco utilizam prepared statemets.
+
+A primeira e segunda parte da validação de acesso ao sistemas funcionam corretamente
+como pedido no enunciado.
+
+A Terceira parte da validação, que consiste em validar a chave privada, foi feita em programa
+externo de teste, passando os paths dos arquivos, e vou validada, passando os metodos
+para dentro do sistema, porêm a priore estava salvando o certificado com Byte[] no Banco
+isso acarretou problemas ao testar, pois é possível que na hora de gerar o certificado
+e salvar o mesmo no banco, estivesse causando algum erro na tradução e por consequência,
+não conseguia retirar a chave publica do certificado para testar. Para contornar isso passei
+a usar Paths, porêm devido a falta de tempo, essas ultimas mudanças não foram possíveis de 
+serem validadas.
+
+O Cadastro e a edição do usuário estão OK, porêm devido ao problema do certificado, anteriormente
+explicado, se fez necessário cadastrar e editar com o mesmo Login.
+
+A listagem dos Documentos também se mostrou dificil implementação e teste, acabamos por deixar
+essa como ultima etapa, e como não chegamos a um resultado satisfatório, resolvemos por entrar
+em uma próxima versão do projeto.
+
+O Sistema de Logs também foi pensando, criamos as tabelas e os querys para preencher a tabela de LOG,
+porém acabamos por deixar de colocar a chamada em várias partes do código, onde elas se fazem nescessárias.
+
+Resumidamente, nosso Sistema ficou incompleto, porém utilizamos diversas tecnicas vistas em sala e aula,
+geração de certificados, uso de chaves privadas e publicas além de decryptação (mesmo que usado apenas
+uma vez na validação da chave privada).
+
+Ficamos de melhorar o projeto até quarta-feira e mostrar avanço no mesmo, para fins didáticos e mostrar
+um programa mais elaborado, que o que se pede na disciplina.
