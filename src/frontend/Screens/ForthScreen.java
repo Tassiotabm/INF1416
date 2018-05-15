@@ -4,6 +4,7 @@ import javax.swing.*;
 import javax.swing.table.TableCellEditor;
 
 import Model.Usuario;
+import backend.CertificateController;
 import backend.ModeloTabelaArquivosSecretos;
 import backend.QueryController.IQueryController;
 import frontend.AuthenticationUser;
@@ -329,26 +330,48 @@ public class ForthScreen extends JFrame implements ActionListener {
 				this.panel.repaint();
 			} else {
 				// deve ser tirado do certificado
-				String versao = "kkk", serie = "v2", validade = "21/03/2023", tipo = "iiiii", emissor = "Anderson",
-						sujeito = "And", email = "and@gmail.com";
+				Usuario user = new Usuario(grupo, path, senha);
+				
+		   	  	CertificateController certificadoRecebido = new CertificateController(user.getCaminhoCertificado());
+		   	  	String login = certificadoRecebido.getLogin();
 
 				String texto = "Confirmar Dados ?\n\n\n";
 				texto += "Grupo: " + grupo + "\n";
 				texto += "Caminho Certificado: " + path + "\n";
-				texto += "Versão: " + versao + "\n";
-				texto += "Série: " + serie + "\n";
-				texto += "Validade: " + validade + "\n";
-				texto += "Tipo de Assinatura: " + tipo + "\n";
-				texto += "Emissor: " + emissor + "\n";
-				texto += "Sujeito (Friendly Name): " + sujeito + "\n";
-				texto += "E-mail: " + email + "\n";
+				texto += "Versão: " + certificadoRecebido.getVersion() + "\n";
+				texto += "Série: " + certificadoRecebido.getSerial() + "\n";
+				texto += "Validade: " + certificadoRecebido.getDate() + "\n";
+				texto += "Tipo de Assinatura: " + certificadoRecebido.getType() + "\n";
+				texto += "Emissor: " + certificadoRecebido.getEmissor() + "\n";
+				texto += "Sujeito (Friendly Name): " + certificadoRecebido.getName() + "\n";
+				texto += "E-mail: " + certificadoRecebido.getEmail() + "\n";
 
 				switch (JOptionPane.showConfirmDialog(null, texto)) {
 				case 0:
-					JOptionPane.showMessageDialog(this, "Cadastro realizado com sucesso!", // mensagem
-							"Sucesso!", // titulo da janela
-							JOptionPane.INFORMATION_MESSAGE);
-
+					if(editFlag) {
+						if(query.editUser(user, login)) {
+							JOptionPane.showMessageDialog(this, "Editar realizado com sucesso!", // mensagem
+									"Sucesso!", // titulo da janela
+									JOptionPane.INFORMATION_MESSAGE);
+						} else {
+							JOptionPane.showMessageDialog(this, "Editar não realizado!", // mensagem
+									"Erro!", // titulo da janela
+									JOptionPane.INFORMATION_MESSAGE);
+						}
+						
+					}else {
+						if(query.registerUser(user, login)) {
+							JOptionPane.showMessageDialog(this, "Cadastro realizado com sucesso!", // mensagem
+									"Sucesso!", // titulo da janela
+									JOptionPane.INFORMATION_MESSAGE);
+						} else {
+							JOptionPane.showMessageDialog(this, "Cadastro não realizado!", // mensagem
+									"Erro!", // titulo da janela
+									JOptionPane.INFORMATION_MESSAGE);
+						}
+						
+					}
+					
 					this.dispose();
 					new ForthScreen(query, login, gpo, nome, qtdUsuariosDoSistema, totalAcessosDoUsuario, totalConsultaDoUsuario);
 					break;
@@ -366,14 +389,6 @@ public class ForthScreen extends JFrame implements ActionListener {
 					txtConfirmPassword.setText("");
 					this.panel.repaint();
 					break;
-				}
-				if(editFlag) {
-					Usuario user = new Usuario(grupo, path, senha);
-					query.editUser(user, AuthenticationUser.getLogin());
-				}else {
-					Usuario user = new Usuario(grupo, path, senha);
-					query.registerUser(user);
-
 				}
 			}
 		} else if (ae.getSource() == btnCancelar) {

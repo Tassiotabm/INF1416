@@ -117,13 +117,14 @@ public final class QueryController implements IQueryController{
 		}
 	}
 	
-	public boolean registerUser(Usuario user) {
+	public boolean registerUser(Usuario user, String login) {
 		try {
 			System.out.println("Email recebido para query:"+user);
 	 	    
 	   	  	PreparedStatement statement = vetordeStatement.get(7);
 	   	  	
 	   	  	//O nome do usuário e o login name devem ser extraídos do campo de Sujeito do certificado
+	   	  	
 	   	  	
 	        String randomUUIDString = uuid.toString();
 	        Random rand = new Random();
@@ -133,7 +134,7 @@ public final class QueryController implements IQueryController{
 	   	  	
 	    	statement.setString(1,randomUUIDString); // ID
 	    	statement.setString(2,hashedPass); // HashedPassword
-	    	statement.setString(3,"Gmail");  // Tem que pegar do certificado!
+	    	statement.setString(3,login);  // Tem que pegar do certificado!
 	    	statement.setInt(4,salt); // PasswordKey
 	    	statement.setString(5,user.getCaminhoCertificado()); // Certificate
 	    	statement.setString(6,grupo);
