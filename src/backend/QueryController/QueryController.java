@@ -17,6 +17,7 @@ import Model.Usuario;
 import backend.CertificateController;
 import backend.KeyAuthentication;
 import backend.PasswordAuthentication;
+import frontend.AuthenticationUser;
 
 public final class QueryController implements IQueryController{
 
@@ -41,7 +42,13 @@ public final class QueryController implements IQueryController{
 	    	statement.setString(1,login);
 		    statement.setQueryTimeout(30);  // set timeout to 30 sec.
 		    rs = statement.executeQuery();
-		    if(rs.getInt(1) == 1){		        	 	    
+		    if(rs.getInt(1) == 1){		
+		   	  	PreparedStatement statement_1 = vetordeStatement.get(11);
+		   	  	statement_1.setString(1,login);
+		   	  	statement_1.setQueryTimeout(30);  // set timeout to 30 sec.
+			    rs = statement_1.executeQuery();
+			    AuthenticationUser.setLogin(rs.getString(3));
+			    AuthenticationUser.setGroup(rs.getString(6));
 		    	return true;
 		   }else {
 			   return false;
@@ -225,7 +232,7 @@ public final class QueryController implements IQueryController{
 			//4
 			vetordeStatement.add(connection.prepareStatement("select User_ID from User where LOGIN=?"));
 			//5
-			vetordeStatement.add(connection.prepareStatement("select count(*) User"));
+			vetordeStatement.add(connection.prepareStatement("select count(*) from User"));
 			//6
 			vetordeStatement.add(connection.prepareStatement("select Certificate from User where LOGIN=?"));
 			//7
@@ -237,7 +244,8 @@ public final class QueryController implements IQueryController{
 			vetordeStatement.add(connection.prepareStatement("INSERT INTO Logs VALUES (?,?,?,?,?)"));
 			//10
 			vetordeStatement.add(connection.prepareStatement("select * from Logs Order by Hora"));
-
+			//11
+			vetordeStatement.add(connection.prepareStatement("select * from User where LOGIN=?"));
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

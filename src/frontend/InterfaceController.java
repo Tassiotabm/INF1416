@@ -26,7 +26,7 @@ public abstract class InterfaceController {
         new ThirdScreen(controller);
     }
 
-    public static void startForthScreen() {
-        new ForthScreen(controller, "Teste", "Administrador", "Teste", 1,2,3);
+    public static void startForthScreen(String Login, String Grupo, String Name) {
+        new ForthScreen(controller, Login, Grupo , Name, 1,2,3);
     }
 }
