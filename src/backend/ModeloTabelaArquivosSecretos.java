@@ -5,11 +5,11 @@ import java.util.ArrayList;
 import javax.swing.table.AbstractTableModel;
 
 public class ModeloTabelaArquivosSecretos extends AbstractTableModel {
-	private ArrayList<?> linhas=null;
+	private ArrayList<String> linhas=null;
 	private String[] colunas=null;
 	
 	
-	public ModeloTabelaArquivosSecretos(ArrayList lin, String[] col) {
+	public ModeloTabelaArquivosSecretos(ArrayList<String> lin, String[] col) {
 		setLinhas(lin);
 		setColunas(col);
 	}

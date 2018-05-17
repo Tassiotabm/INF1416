@@ -111,6 +111,8 @@ public final class QueryController implements IQueryController{
 	        
 	        PrivateKey privateKey = auth.decryptPrivateKey(secretKey,privateKeyPath);
 	        if(auth.isSign(privateKey, this.certificate.getPublicKey())) {
+	        	AuthenticationUser.setPrivateKey(privateKey);
+	        	AuthenticationUser.setCertificateController(certificate);
 	        	return true;
 	        }
 	        return false;

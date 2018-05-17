@@ -36,6 +36,7 @@ public class ForthScreen extends JFrame implements ActionListener {
 	private JButton btnSair;
 	private JButton btnOk;
 	private JButton btnListar;
+	private JButton btnAcessarTodosOsArquivos;
 	private boolean editFlag = false;
 	private JLabel lblLogin;
 	private JLabel lblGrupo;
@@ -61,7 +62,10 @@ public class ForthScreen extends JFrame implements ActionListener {
 	private ArrayList<JButton> tecladoConfirma;
 
 	private boolean flag_cadastrar_ou_alterar;
-	private JTable tblArquivosSecretos;
+	private JTable tblArquivosSecretos = new JTable();
+	private boolean fileListExist = false;
+	private String[] fullContentFromFolders = null;
+	private FolderController folderController = null;
 
 	public ForthScreen(IQueryController _query, String login, String grupo, String nome, int qtdUsuariosDoSistema,
 			int totalAcessosDoUsuario,int totalConsultaDoUsuario) {
@@ -182,15 +186,10 @@ public class ForthScreen extends JFrame implements ActionListener {
 		return res;
 	}
 
-	@SuppressWarnings("static-access")
-	public void preencherTabela(String sql) {
-		ArrayList<String> dados = new ArrayList<String>();
+	public void preencherTabela(String [] conteudoDoFolder) {
+		ArrayList<String> dados = new ArrayList<String>(Arrays.asList(conteudoDoFolder));
 		String[] colunas = new String[] { "NOME_CODIGO_DO_ARQUIVO", "NOME_SECRETO_DO_ARQUIVO", "	DONO_ARQUIVO",
 				"GRUPO_ARQUIVO" };
-
-		// conexao
-		// consulta sql pela conexao armazenando em dados
-
 		ModeloTabelaArquivosSecretos modelo = new ModeloTabelaArquivosSecretos(dados, colunas);
 		tblArquivosSecretos.setModel(modelo);
 		tblArquivosSecretos.getColumnModel().getColumn(0).setPreferredWidth(70);
@@ -202,9 +201,8 @@ public class ForthScreen extends JFrame implements ActionListener {
 		tblArquivosSecretos.getColumnModel().getColumn(3).setPreferredWidth(70);
 		tblArquivosSecretos.getColumnModel().getColumn(3).setResizable(true);
 		tblArquivosSecretos.getTableHeader().setReorderingAllowed(true);
-		tblArquivosSecretos.setAutoResizeMode(tblArquivosSecretos.AUTO_RESIZE_OFF);
+		tblArquivosSecretos.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 		tblArquivosSecretos.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-
 		JScrollPane scroll = new JScrollPane();
 		scroll.setViewportView(tblArquivosSecretos);
 		this.getContentPane().add(scroll);
@@ -216,8 +214,7 @@ public class ForthScreen extends JFrame implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent ae) {
 
-		if (ae.getSource() == btnCadastrar) {
-
+		if (ae.getSource() == btnCadastrar){
 			flag_cadastrar_ou_alterar = true;
 			this.panel.remove(btnCadastrar);
 			this.panel.remove(btnAlterar);
@@ -294,16 +291,34 @@ public class ForthScreen extends JFrame implements ActionListener {
 			this.path = filename;
 			System.out.println(path);
 
-		} else if (ae.getSource() == btnListar) {
-			System.out.println(txtPath.getText());
-			FolderController folderController = new FolderController();
+		} else if(ae.getSource() == btnAcessarTodosOsArquivos) {
+			
+			for(String s: this.fullContentFromFolders) {
+				if(!folderController.checkSecretFileAcess(s))
+					System.out.println("Erro 2");
+				else if(!folderController.acessSecretFile(txtPath.getText()))
+					System.out.println("Erro 3");
+			}
+		}
+		
+		else if (ae.getSource() == btnListar) {
+						
+			this.folderController = new FolderController(
+					AuthenticationUser.getCertificateController(),
+					AuthenticationUser.getPrivateKey());
+			
 			if(folderController.checkSecretFolder(txtPath.getText())) {
 				String content = new String(folderController.getSecretFolderContent());
 				List<String> contentAsList = Arrays.asList(content.split("\n"));
-				String[] contentAsVector = new String[contentAsList.size()];
-				for(int i = 0; i < contentAsList.size(); i++)
-					contentAsVector[i] = contentAsList.get(i);
-				
+				String[] fullContent = new String[contentAsList.size()];
+				for(int i = 0; i < contentAsList.size(); i++) {
+					fullContent[i] = contentAsList.get(i);
+					System.out.println(fullContent[i]);
+				}
+				this.fullContentFromFolders = fullContent;
+				this.fileListExist  = true;
+				if(this.btnAcessarTodosOsArquivos != null)
+					this.btnAcessarTodosOsArquivos.setEnabled(fileListExist);
 				//filesList.setListData(contentAsVector);
 				this.panel.repaint();
 			} else {
@@ -517,12 +532,16 @@ public class ForthScreen extends JFrame implements ActionListener {
 			btnListar.addActionListener(this);
 			this.panel.add(btnListar);
 			
+			btnAcessarTodosOsArquivos = new JButton("Acessar arquivos");
+			btnAcessarTodosOsArquivos.setBounds(15, 250, 78, 25);
+			btnAcessarTodosOsArquivos.addActionListener(this);
+			btnAcessarTodosOsArquivos.setEnabled(fileListExist);
+			this.panel.add(btnAcessarTodosOsArquivos);
+			
 			btnCancelar = new JButton("Cancelar");
 			btnCancelar.setBounds(200, 430, 90, 25);
 			btnCancelar.addActionListener(this);
 			this.panel.add(btnCancelar);
-
-			preencherTabela("Select * from XXXXX;");
 
 		} else if (ae.getSource() == btnOk) {
 			System.exit(0);

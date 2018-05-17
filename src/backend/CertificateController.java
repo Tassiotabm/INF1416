@@ -2,8 +2,6 @@ package backend;
 
 import java.security.PublicKey;
 import java.security.cert.X509Certificate;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.security.cert.CertificateFactory;
 import java.security.cert.CertificateException;
 import java.io.FileInputStream;

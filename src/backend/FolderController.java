@@ -1,36 +1,45 @@
 package backend;
 
 import java.security.PrivateKey;
-import java.util.HashMap;
-import java.util.Map;
+
+import frontend.AuthenticationUser;
+
 
 public class FolderController {
 
-	private PrivateKey userPK = null;
+	private PrivateKey userPrivateKey = null;
 		
-	private CertificateController userCertificate = null;
-	
-	private int totalRegisteredUsers = 0;
-	
+	private CertificateController userCertificate = null;	
 	private CertificateController registryCertificate = null;
-	private SecretFolderAccessor sfa = null;
-	public FolderController() {
-		// TODO Auto-generated constructor stub
-		
+	private SecretFolderAccessor folderAcessor = null;
+	private UserFileAccessor ufa = null;
+	
+	public FolderController(CertificateController _userCertificate, PrivateKey _userPrivateKey) {
+		this.userPrivateKey = _userPrivateKey;
+		this.userCertificate = _userCertificate;
 	}
 	
 	public boolean checkSecretFolder(String secretFolderPath) {
 		// TODO Auto-generated method stub
-		sfa = new SecretFolderAccessor();
+		this.folderAcessor = new SecretFolderAccessor();
 		
 		String folderEnv = secretFolderPath.replace(".enc", ".env");
 		String folderAsd = secretFolderPath.replace(".enc", ".asd");
 		
-		return sfa.checkFolderAccess(userCertificate, secretFolderPath, folderEnv, folderAsd, userPK);
+		return folderAcessor.checkFolderAccess(userCertificate, secretFolderPath, folderEnv, folderAsd, userPrivateKey);
+	}
+	
+	public boolean checkSecretFileAcess(String filePath) {
+		ufa = new UserFileAccessor();
+		return ufa.checkFileAccess(filePath, AuthenticationUser.getLogin(), AuthenticationUser.getGroup());
 	}
 	
 	public byte[] getSecretFolderContent() {
 		// TODO Auto-generated method stub
-		return sfa.getFolderContent();
+		return folderAcessor.getFolderContent();
+	}
+	
+	public boolean acessSecretFile(String filePath) {
+		return ufa.accessFile(AuthenticationUser.getPrivateKey(), AuthenticationUser.getCertificateController(), filePath);
 	}
 }
