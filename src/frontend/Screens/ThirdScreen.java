@@ -1,6 +1,8 @@
 package frontend.Screens;
 
 import javax.swing.*;
+import javax.swing.event.CaretEvent;
+import javax.swing.event.CaretListener;
 
 import backend.QueryController.IQueryController;
 import frontend.AuthenticationUser;
@@ -15,12 +17,10 @@ import java.io.File;
 
 public class ThirdScreen extends JFrame implements ActionListener {
 
-    /**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	@SuppressWarnings("unused")
     private static IQueryController query;
+	private String filePath;
     private Font titleFont = new Font("Monospaced", Font.BOLD, 30);
     private JPanel panel;
     private JButton btn1;
@@ -62,9 +62,11 @@ public class ThirdScreen extends JFrame implements ActionListener {
         btn2 = new JButton("PROX");
         btn2.setBounds(380, 200, 100, 50);
         btn2.addActionListener(this);
+        btn2.setEnabled(false);
         this.panel.add(btn2);
 
         secret.setBounds(40,200, 300, 50);
+        secret.addCaretListener(new visualizador());
         this.panel.add(secret, BorderLayout.NORTH);
         
         JLabel lblSecret = new JLabel("Pergunta Secreta");
@@ -81,7 +83,8 @@ public class ThirdScreen extends JFrame implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent ae) {
-
+    	
+    	
         if (ae.getSource() == btn1) {
             JFileChooser chooser = new JFileChooser();
             chooser.showOpenDialog(null);
@@ -94,9 +97,7 @@ public class ThirdScreen extends JFrame implements ActionListener {
         	
             if(query.checkCertificate(this.path, this.secret.getText(), AuthenticationUser.getLogin())) {  
                 this.dispose();
-            	InterfaceController.startForthScreen(AuthenticationUser.getLogin(),
-            			AuthenticationUser.getLogin(),
-            			AuthenticationUser.getGroup());
+            	InterfaceController.startForthScreen();
                 query.RegisterLog(AuthenticationUser.getLogin(), null , 4003);
             }else {
                 JOptionPane.showMessageDialog(null, "Assinatura ou chave secreta inválida",
@@ -108,4 +109,19 @@ public class ThirdScreen extends JFrame implements ActionListener {
             //Erro inesperado!
         }
     }
+    private class visualizador implements CaretListener{
+
+    	@Override
+    	public void caretUpdate(CaretEvent e) {
+    		String s=secret.getText(),s2=txtPath.getText();
+    		
+    		if(s.isEmpty() || s2.isEmpty())
+    			btn2.setEnabled(false);
+    		else
+    			btn2.setEnabled(true);
+    		
+    	}
+    	
+    }
 }
+
