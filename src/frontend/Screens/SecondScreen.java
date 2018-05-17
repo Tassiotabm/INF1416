@@ -29,7 +29,8 @@ public class SecondScreen extends JFrame implements ActionListener {
     private JButton btn4;
     private JButton btn5;
     private ArrayList<String> fonemas = new ArrayList<String>();
-
+    private static int count=0;
+    
     public SecondScreen(IQueryController _query) {
         super();
         
@@ -122,15 +123,32 @@ public class SecondScreen extends JFrame implements ActionListener {
         if(SecondScreen.clickCount == 3) {
         	SecondScreen.clickCount = 0;
         	if(query.validatePassword(AuthenticationUser.getLogin(),matrix)) {
-                this.setVisible(false);
+                //this.setVisible(false);
+                this.dispose();
                 InterfaceController.startThirdScreen();
                 query.RegisterLog(AuthenticationUser.getLogin(), null , 3002);
                 query.RegisterLog(AuthenticationUser.getLogin(), null , 3003);
 
             } else {
-                query.RegisterLog(AuthenticationUser.getLogin(), null , 4003);
-                JOptionPane.showMessageDialog(null, "Senha incorreta",
-                        "Acess denied", JOptionPane.INFORMATION_MESSAGE);
+                if (count<2) {
+	            	query.RegisterLog(AuthenticationUser.getLogin(), null , 4003);
+	                JOptionPane.showMessageDialog(null, "Senha incorreta",
+	                        "Access denied", JOptionPane.INFORMATION_MESSAGE);
+	                count++;
+	                System.out.println("count --- "+count);
+                }
+                else {
+                	JOptionPane.showMessageDialog(null, "Você errou a senha 3 vezes\nEspere 3 minutos para tentar novamente.\n",
+	                        "Access denied", JOptionPane.INFORMATION_MESSAGE);
+            
+                	try {
+						Thread.sleep(60000);
+					} catch (InterruptedException e) {
+						System.out.println("erro no sleep");
+						e.printStackTrace();
+					}
+                	count=0;
+                }
                 
             }
         }

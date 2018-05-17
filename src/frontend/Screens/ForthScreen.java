@@ -24,6 +24,7 @@ import java.util.List;
 
 public class ForthScreen extends JFrame implements ActionListener {
 
+	@SuppressWarnings("unused")
 	private static IQueryController query;
 	private Font fonteCabecalho = new Font("Monospaced", Font.BOLD, 15);
 	private JPanel panel;
@@ -72,6 +73,7 @@ public class ForthScreen extends JFrame implements ActionListener {
 		this.login = login;
 		this.gpo = grupo;
 		this.nome = nome;
+		this.qtdUsuariosDoSistema = query.GetUsersCount();
 		this.totalAcessosDoUsuario = totalAcessosDoUsuario;
 		this.totalConsultaDoUsuario = totalConsultaDoUsuario;
 		
@@ -105,17 +107,14 @@ public class ForthScreen extends JFrame implements ActionListener {
 		lblNome.setFont(fonteCabecalho);
 		this.panel.add(lblNome);
 
-		lblQtd = new JLabel("Total de usuários do sistema: " + query.GetUsersCount());
+		lblQtd = new JLabel("Total de usuários do sistema: " + qtdUsuariosDoSistema);
 		lblQtd.setBounds(15, -150, 500, 500);
 		this.panel.add(lblQtd);
 
 		btnCadastrar = new JButton("Cadastrar um novo usuário");
 		btnCadastrar.setBounds(70, 170, 350, 50);
 		btnCadastrar.addActionListener(this);
-		
-		if(AuthenticationUser.getGroup() != null)
-			if(AuthenticationUser.getGroup().equals("Administrador"))
-				this.panel.add(btnCadastrar);
+		this.panel.add(btnCadastrar);
 
 		btnAlterar = new JButton("Alterar senha pessoal e certificado digital do usuário");
 		btnAlterar.setBounds(70, 240, 350, 50);
