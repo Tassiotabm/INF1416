@@ -49,7 +49,7 @@ public class ThirdScreen extends JFrame implements ActionListener {
         txtPath.setBounds(40, 98, 300, 50);
         this.panel.add(txtPath, BorderLayout.NORTH);
 
-        JLabel lblTitle = new JLabel("Indique a assinatura");
+        JLabel lblTitle = new JLabel("Indique a private key!");
         lblTitle.setBounds(105, -230, 500, 500);
         lblTitle.setFont(titleFont);
         this.panel.add(lblTitle);

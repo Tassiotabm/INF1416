@@ -5,9 +5,11 @@ import javax.swing.table.TableCellEditor;
 
 import Model.Usuario;
 import backend.CertificateController;
+import backend.FolderController;
 import backend.ModeloTabelaArquivosSecretos;
 import backend.QueryController.IQueryController;
 import frontend.AuthenticationUser;
+import main.ECMSystem;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -17,6 +19,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class ForthScreen extends JFrame implements ActionListener {
 
@@ -39,7 +43,7 @@ public class ForthScreen extends JFrame implements ActionListener {
 	private JLabel lblQtd;
 	private JTextField txtPath = new JTextField(40);
 	private String[] listaGrupo = new String[] { "Administrador", "Usuário" };
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private JComboBox boxGrupo = new JComboBox(listaGrupo);
 	// private JTextField txtGrupo = new JTextField(40);
 	private JTextField txtPassword = new JTextField(40);
@@ -180,8 +184,9 @@ public class ForthScreen extends JFrame implements ActionListener {
 		return res;
 	}
 
+	@SuppressWarnings("static-access")
 	public void preencherTabela(String sql) {
-		ArrayList dados = new ArrayList();
+		ArrayList<String> dados = new ArrayList<String>();
 		String[] colunas = new String[] { "NOME_CODIGO_DO_ARQUIVO", "NOME_SECRETO_DO_ARQUIVO", "	DONO_ARQUIVO",
 				"GRUPO_ARQUIVO" };
 
@@ -292,7 +297,23 @@ public class ForthScreen extends JFrame implements ActionListener {
 			System.out.println(path);
 
 		} else if (ae.getSource() == btnListar) {
-			// implementar ainda
+			System.out.println(txtPath.getText());
+			FolderController folderController = new FolderController();
+			if(folderController.checkSecretFolder(txtPath.getText())) {
+				String content = new String(folderController.getSecretFolderContent());
+				List<String> contentAsList = Arrays.asList(content.split("\n"));
+				String[] contentAsVector = new String[contentAsList.size()];
+				for(int i = 0; i < contentAsList.size(); i++)
+					contentAsVector[i] = contentAsList.get(i);
+				
+				//filesList.setListData(contentAsVector);
+				this.panel.repaint();
+			} else {
+				JOptionPane.showMessageDialog(this, "Folder has integrity and authenticity problems!",
+						"Atenção!", // titulo da janela
+						JOptionPane.INFORMATION_MESSAGE);
+				// Erro de acesso!
+			}
 
 		} else if (ae.getSource() == btnSalvar) {
 			path = txtPath.getText();

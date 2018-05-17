@@ -12,10 +12,10 @@ public abstract class InterfaceController {
 
     public static void init(IQueryController _controller) {
         controller = _controller;
-        new FirstScreen(controller);
+        //new FirstScreen(controller);
         //new SecondScreen(controller);
         //new ThirdScreen(controller);
-        //new ForthScreen(controller, "Teste", "Administrator", "Teste", 1,2,3);
+        new ForthScreen(controller, "Teste", "Administrator", "Teste", 1,2,3);
     }
 
     public static void startSecondScreen() {
