@@ -21,6 +21,7 @@ public class ThirdScreen extends JFrame implements ActionListener {
 	private static final long serialVersionUID = 1L;
 	@SuppressWarnings("unused")
     private static IQueryController query;
+	private String filePath;
     private Font titleFont = new Font("Monospaced", Font.BOLD, 30);
     private JPanel panel;
     private JButton btn1;
@@ -90,20 +91,18 @@ public class ThirdScreen extends JFrame implements ActionListener {
             txtPath.setText(filename);
             this.path = filename;
             System.out.println(path);
-            if(query.checkCertificate(filename, this.secret.getText(), AuthenticationUser.getLogin())) {
-                InterfaceController.startForthScreen();
+        } else if (ae.getSource() == btn2) {
+        	
+            if(query.checkCertificate(this.path, this.secret.getText(), AuthenticationUser.getLogin())) {  
+                this.dispose();
+            	InterfaceController.startForthScreen();
                 query.RegisterLog(AuthenticationUser.getLogin(), null , 4003);
             }else {
                 JOptionPane.showMessageDialog(null, "Assinatura ou chave secreta inválida",
                         "Acess denied", JOptionPane.INFORMATION_MESSAGE);
                 query.RegisterLog(AuthenticationUser.getLogin(), null , 4006);
             }
-
-        } else if (ae.getSource() == btn2) {
-            System.out.println(btn2.getText());
-            this.dispose();
-            InterfaceController.startForthScreen();
-
+            
         } else {
             //Erro inesperado!
         }

@@ -3,6 +3,7 @@ package backend.QueryController;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.security.PrivateKey;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -21,14 +22,12 @@ public final class QueryController implements IQueryController{
 
 	private static Vector <PreparedStatement> vetordeStatement = new Vector<PreparedStatement>();
 	private Connection connection;
-	private UUID uuid;
 	private KeyAuthentication auth;
 	private CertificateController certificate;
 	
 	public QueryController(Connection _connection) {
 		this.connection = _connection;
 		this.prepareStatments();
-        this.uuid = UUID.randomUUID();
         this.auth = new KeyAuthentication();
 	}
 
@@ -103,14 +102,11 @@ public final class QueryController implements IQueryController{
 		    String certificatePath = rs.getString(1);
 	        this.certificate = new CertificateController(certificatePath);
 	        
-	        Path path = Paths.get(privateKeyPath);
-	        byte[] encodedPrivateKey = Files.readAllBytes(path);
-	        
-	        if(auth.isSign(auth.decryptPrivateKey(encodedPrivateKey, secretKey), this.certificate.getPublicKey())) {
+	        PrivateKey privateKey = auth.decryptPrivateKey(secretKey,privateKeyPath);
+	        if(auth.isSign(privateKey, this.certificate.getPublicKey())) {
 	        	return true;
 	        }
 	        return false;
-		    // auth.retrivePublicKey(certificate); retorno de bytes do back estava errado....		    
 		}catch(Exception ex) {
 			System.out.println(ex);
 			return false;
@@ -125,7 +121,7 @@ public final class QueryController implements IQueryController{
 	   	  	
 	   	  	//O nome do usuário e o login name devem ser extraídos do campo de Sujeito do certificado
 	   	  	
-	   	  	
+	        UUID uuid = UUID.randomUUID();
 	        String randomUUIDString = uuid.toString();
 	        Random rand = new Random();
 	   	  	Integer salt = rand.nextInt(999999999);
@@ -158,10 +154,10 @@ public final class QueryController implements IQueryController{
 	   	  	Integer salt = rand.nextInt(999999999);
 	   	  	String hashedPass = PasswordAuthentication.generatePasswordHash(user.getSenha(), salt);
 	   	  	
-	    	statement.setString(1,hashedPass); // HashedPassword
-	    	statement.setInt(2,salt); // PasswordKey
+	    	statement.setString(2,hashedPass); // HashedPassword
+	    	statement.setInt(1,salt); // PasswordKey
 	    	statement.setString(3,user.getCaminhoCertificado()); // Certificate 
-	    	statement.setString(4,"Gmail"); //user login
+	    	statement.setString(4,login); //user login
 	    	
 		    statement.setQueryTimeout(30);  // set timeout to 30 sec.
 		    statement.executeUpdate();
@@ -195,7 +191,9 @@ public final class QueryController implements IQueryController{
 	   	    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	   	    Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 	   	    String ts = sdf.format(timestamp);
-	   	 	statement.setString(1,uuid.toString()); // ID
+	        UUID uuid = UUID.randomUUID();
+	        String randomUUIDString = uuid.toString();
+	   	 	statement.setString(1,randomUUIDString); // ID
 	    	statement.setString(2,ts); // ID
 	    	statement.setString(3,login);
 	    	statement.setString(4,filePath);

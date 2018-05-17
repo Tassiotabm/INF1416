@@ -122,6 +122,7 @@ public class SecondScreen extends JFrame implements ActionListener {
         if(SecondScreen.clickCount == 3) {
         	SecondScreen.clickCount = 0;
         	if(query.validatePassword(AuthenticationUser.getLogin(),matrix)) {
+                this.setVisible(false);
                 InterfaceController.startThirdScreen();
                 query.RegisterLog(AuthenticationUser.getLogin(), null , 3002);
                 query.RegisterLog(AuthenticationUser.getLogin(), null , 3003);

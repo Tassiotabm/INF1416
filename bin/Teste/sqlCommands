@@ -5,13 +5,12 @@ CREATE TABLE `Mensagens` (
 );
 
 CREATE TABLE `Logs` (
-	`ID` Decimal NOT NULL,
+	`ID` VARCHAR NOT NULL,
 	`Hora` VARCHAR(255) NOT NULL,
 	`User` VARCHAR(255),
 	`File` VARCHAR(255),
 	`Mensagens_ID` Decimal NOT NULL,
-	PRIMARY KEY (`ID`),
-	CONSTRAINT `Logs_fk0` FOREIGN KEY (`Mensagens_ID`) REFERENCES `Mensagens`(`Codigo`)
+	PRIMARY KEY (`ID`)
 );
 
 CREATE TABLE `User` (
