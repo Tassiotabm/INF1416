@@ -9,7 +9,6 @@ import backend.FolderController;
 import backend.ModeloTabelaArquivosSecretos;
 import backend.QueryController.IQueryController;
 import frontend.AuthenticationUser;
-import main.ECMSystem;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -354,7 +353,7 @@ public class ForthScreen extends JFrame implements ActionListener {
 				Usuario user = new Usuario(grupo, path, senha);
 				
 		   	  	CertificateController certificadoRecebido = new CertificateController(user.getCaminhoCertificado());
-		   	  	String login = certificadoRecebido.getLogin();
+		   	  	//String login = certificadoRecebido.getLogin();
 
 				String texto = "Confirmar Dados ?\n\n\n";
 				texto += "Grupo: " + grupo + "\n";
@@ -370,7 +369,7 @@ public class ForthScreen extends JFrame implements ActionListener {
 				switch (JOptionPane.showConfirmDialog(null, texto)) {
 				case 0:
 					if(editFlag) {
-						if(query.editUser(user, login)) {
+						if(query.editUser(user, AuthenticationUser.getLogin())) {
 							JOptionPane.showMessageDialog(this, "Editar realizado com sucesso!", // mensagem
 									"Sucesso!", // titulo da janela
 									JOptionPane.INFORMATION_MESSAGE);

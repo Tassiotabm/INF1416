@@ -13,9 +13,7 @@ public class FolderController {
 	private int totalRegisteredUsers = 0;
 	
 	private CertificateController registryCertificate = null;
-	private UserRegister ur = null;
 	private SecretFolderAccessor sfa = null;
-	private UserFileAccessor ufa = null;
 	public FolderController() {
 		// TODO Auto-generated constructor stub
 		
