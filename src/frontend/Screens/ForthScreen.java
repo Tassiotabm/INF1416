@@ -1,7 +1,7 @@
 package frontend.Screens;
 
 import javax.swing.*;
-import javax.swing.table.TableCellEditor;
+
 
 import Model.Usuario;
 import backend.CertificateController;
@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+@SuppressWarnings("serial")
 public class ForthScreen extends JFrame implements ActionListener {
 
 	@SuppressWarnings("unused")
@@ -66,13 +67,14 @@ public class ForthScreen extends JFrame implements ActionListener {
 	private boolean fileListExist = false;
 	private String[] fullContentFromFolders = null;
 	private FolderController folderController = null;
-
+	
 	public ForthScreen(IQueryController _query, String login, String grupo, String nome, int qtdUsuariosDoSistema,
 			int totalAcessosDoUsuario,int totalConsultaDoUsuario) {
 		super();
 		query = _query;
 		initializeFonemas();
-
+		query.RegisterLog(AuthenticationUser.getLogin(), null , 5001);
+		
 		this.login = login;
 		this.gpo = grupo;
 		this.nome = nome;
@@ -215,6 +217,8 @@ public class ForthScreen extends JFrame implements ActionListener {
 	public void actionPerformed(ActionEvent ae) {
 
 		if (ae.getSource() == btnCadastrar){
+			query.RegisterLog(AuthenticationUser.getLogin(), null , 5002);
+			query.RegisterLog(AuthenticationUser.getLogin(), null , 6001);
 			flag_cadastrar_ou_alterar = true;
 			this.panel.remove(btnCadastrar);
 			this.panel.remove(btnAlterar);
@@ -302,7 +306,7 @@ public class ForthScreen extends JFrame implements ActionListener {
 		}
 		
 		else if (ae.getSource() == btnListar) {
-						
+			query.RegisterLog(AuthenticationUser.getLogin(), null , 8003);			
 			this.folderController = new FolderController(
 					AuthenticationUser.getCertificateController(),
 					AuthenticationUser.getPrivateKey());
@@ -322,6 +326,7 @@ public class ForthScreen extends JFrame implements ActionListener {
 				//filesList.setListData(contentAsVector);
 				this.panel.repaint();
 			} else {
+				
 				JOptionPane.showMessageDialog(this, "Folder has integrity and authenticity problems!",
 						"Atenção!", // titulo da janela
 						JOptionPane.INFORMATION_MESSAGE);
@@ -329,11 +334,16 @@ public class ForthScreen extends JFrame implements ActionListener {
 			}
 
 		} else if (ae.getSource() == btnSalvar) {
+			
 			path = txtPath.getText();
 			int indice = boxGrupo.getSelectedIndex();
 			grupo = listaGrupo[indice];
 			System.out.println("Grupo: " + grupo);
-
+			if(flag_cadastrar_ou_alterar)
+				query.RegisterLog(AuthenticationUser.getLogin(), null , 6002);
+			else
+				query.RegisterLog(AuthenticationUser.getLogin(), null , 7001);
+			
 			if (flag_cadastrar_ou_alterar
 					&& (path.isEmpty() || grupo.isEmpty() || senha.isEmpty() || confirmacao.isEmpty())) {
 				JOptionPane.showMessageDialog(this, "Preencha todos os campos do formulário para prosseguir.", // mensagem
@@ -385,10 +395,12 @@ public class ForthScreen extends JFrame implements ActionListener {
 				case 0:
 					if(editFlag) {
 						if(query.editUser(user, AuthenticationUser.getLogin())) {
+							query.RegisterLog(AuthenticationUser.getLogin(), null , 7004);
 							JOptionPane.showMessageDialog(this, "Editar realizado com sucesso!", // mensagem
 									"Sucesso!", // titulo da janela
 									JOptionPane.INFORMATION_MESSAGE);
 						} else {
+							query.RegisterLog(AuthenticationUser.getLogin(), null , 7005);
 							JOptionPane.showMessageDialog(this, "Editar não realizado!", // mensagem
 									"Erro!", // titulo da janela
 									JOptionPane.INFORMATION_MESSAGE);
@@ -396,10 +408,12 @@ public class ForthScreen extends JFrame implements ActionListener {
 						
 					}else {
 						if(query.registerUser(user, login)) {
+							query.RegisterLog(AuthenticationUser.getLogin(), null , 6005);
 							JOptionPane.showMessageDialog(this, "Cadastro realizado com sucesso!", // mensagem
 									"Sucesso!", // titulo da janela
 									JOptionPane.INFORMATION_MESSAGE);
 						} else {
+							query.RegisterLog(AuthenticationUser.getLogin(), null , 6006);
 							JOptionPane.showMessageDialog(this, "Cadastro não realizado!", // mensagem
 									"Erro!", // titulo da janela
 									JOptionPane.INFORMATION_MESSAGE);
@@ -427,11 +441,12 @@ public class ForthScreen extends JFrame implements ActionListener {
 				}
 			}
 		} else if (ae.getSource() == btnCancelar) {
+			
 			this.dispose();
 			new ForthScreen(query, login, gpo, nome, qtdUsuariosDoSistema, totalAcessosDoUsuario, totalConsultaDoUsuario);
 
 		} else if (ae.getSource() == btnAlterar) {
-
+			query.RegisterLog(AuthenticationUser.getLogin(), null , 5003);
 			editFlag = true;
 			flag_cadastrar_ou_alterar = false;
 			this.panel.remove(btnCadastrar);
@@ -500,7 +515,8 @@ public class ForthScreen extends JFrame implements ActionListener {
 			this.panel.repaint();
 
 		} else if (ae.getSource() == btnConsultar) {
-
+			query.RegisterLog(AuthenticationUser.getLogin(), null , 5004);
+			query.RegisterLog(AuthenticationUser.getLogin(), null , 8001);
 			this.panel.remove(btnCadastrar);
 			this.panel.remove(btnAlterar);
 			this.panel.remove(btnConsultar);
@@ -544,10 +560,12 @@ public class ForthScreen extends JFrame implements ActionListener {
 			this.panel.add(btnCancelar);
 
 		} else if (ae.getSource() == btnOk) {
+			query.RegisterLog(AuthenticationUser.getLogin(), null , 9003);
 			System.exit(0);
 
 		} else if (ae.getSource() == btnSair) {
-
+			query.RegisterLog(AuthenticationUser.getLogin(), null , 5005);
+			query.RegisterLog(AuthenticationUser.getLogin(), null , 9001);
 			this.panel.remove(btnCadastrar);
 			this.panel.remove(btnAlterar);
 			this.panel.remove(btnConsultar);
