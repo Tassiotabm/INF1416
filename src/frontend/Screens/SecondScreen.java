@@ -131,6 +131,12 @@ public class SecondScreen extends JFrame implements ActionListener {
 
             } else {
                 if (count<2) {
+                	if(count==0)
+                		query.RegisterLog(AuthenticationUser.getLogin(), null , 3004);
+                	
+                	else if(count==1)
+                		query.RegisterLog(AuthenticationUser.getLogin(), null , 3005);
+                	
 	            	query.RegisterLog(AuthenticationUser.getLogin(), null , 4003);
 	                JOptionPane.showMessageDialog(null, "Senha incorreta",
 	                        "Access denied", JOptionPane.INFORMATION_MESSAGE);

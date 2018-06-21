@@ -10,9 +10,8 @@ public class FolderController {
 	private PrivateKey userPrivateKey = null;
 		
 	private CertificateController userCertificate = null;	
-	private CertificateController registryCertificate = null;
 	private SecretFolderAccessor folderAcessor = null;
-	private UserFileAccessor ufa = null;
+	private UserFileAccessor fileAcessor = null;
 	
 	public FolderController(CertificateController _userCertificate, PrivateKey _userPrivateKey) {
 		this.userPrivateKey = _userPrivateKey;
@@ -30,8 +29,8 @@ public class FolderController {
 	}
 	
 	public boolean checkSecretFileAcess(String filePath) {
-		ufa = new UserFileAccessor();
-		return ufa.checkFileAccess(filePath, AuthenticationUser.getLogin(), AuthenticationUser.getGroup());
+		this.fileAcessor = new UserFileAccessor();
+		return this.fileAcessor.checkFileAccess(filePath, AuthenticationUser.getLogin(), AuthenticationUser.getGroup());
 	}
 	
 	public byte[] getSecretFolderContent() {
@@ -39,7 +38,7 @@ public class FolderController {
 		return folderAcessor.getFolderContent();
 	}
 	
-	public boolean acessSecretFile(String filePath) {
-		return ufa.accessFile(AuthenticationUser.getPrivateKey(), AuthenticationUser.getCertificateController(), filePath);
+	public boolean acessSecretFile(String filePath, String fileSelected) {
+		return this.fileAcessor.accessFile(AuthenticationUser.getPrivateKey(), AuthenticationUser.getCertificateController(), filePath, fileSelected);
 	}
 }

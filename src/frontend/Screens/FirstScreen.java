@@ -51,6 +51,8 @@ public class FirstScreen extends JFrame implements ActionListener {
             try {
                 if (query.findUser(login) == true) {
                     loginframe.setVisible(false);
+                    query.RegisterLog(login, null, 2002);
+                    query.RegisterLog(login, null, 2003);
                     AuthenticationUser.setLogin(login);
                     InterfaceController.startSecondScreen();
                 } else {

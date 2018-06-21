@@ -110,7 +110,7 @@ public class ForthScreen extends JFrame implements ActionListener {
 		lblNome.setFont(fonteCabecalho);
 		this.panel.add(lblNome);
 
-		lblQtd = new JLabel("Total de usuários do sistema: " + qtdUsuariosDoSistema);
+		lblQtd = new JLabel("Total de usuários do sistema: " + query.GetUsersCount());
 		lblQtd.setBounds(15, -150, 500, 500);
 		this.panel.add(lblQtd);
 
@@ -215,6 +215,7 @@ public class ForthScreen extends JFrame implements ActionListener {
 	public void actionPerformed(ActionEvent ae) {
 
 		if (ae.getSource() == btnCadastrar){
+			editFlag = false;
 			flag_cadastrar_ou_alterar = true;
 			this.panel.remove(btnCadastrar);
 			this.panel.remove(btnAlterar);
@@ -295,9 +296,10 @@ public class ForthScreen extends JFrame implements ActionListener {
 			
 			for(String s: this.fullContentFromFolders) {
 				if(!folderController.checkSecretFileAcess(s))
-					System.out.println("Erro 2");
-				else if(!folderController.acessSecretFile(txtPath.getText()))
-					System.out.println("Erro 3");
+					System.err.println("Usuario atual não possui permissão para acessar o arquivo"+"\n"+ s);
+				
+				else if(!folderController.acessSecretFile(txtPath.getText(),s))
+					System.out.println("Não foi possível acessar o arquivo especificado");
 			}
 		}
 		
@@ -367,7 +369,7 @@ public class ForthScreen extends JFrame implements ActionListener {
 				// deve ser tirado do certificado
 				Usuario user = new Usuario(grupo, path, senha);
 				
-		   	  	CertificateController certificadoRecebido = new CertificateController(user.getCaminhoCertificado());
+		   	  	CertificateController certificadoRecebido = new CertificateController(path);
 		   	  	//String login = certificadoRecebido.getLogin();
 
 				String texto = "Confirmar Dados ?\n\n\n";
@@ -395,7 +397,7 @@ public class ForthScreen extends JFrame implements ActionListener {
 						}
 						
 					}else {
-						if(query.registerUser(user, login)) {
+						if(query.registerUser(user, certificadoRecebido.getLogin())) {
 							JOptionPane.showMessageDialog(this, "Cadastro realizado com sucesso!", // mensagem
 									"Sucesso!", // titulo da janela
 									JOptionPane.INFORMATION_MESSAGE);

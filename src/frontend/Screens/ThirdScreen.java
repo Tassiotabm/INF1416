@@ -96,10 +96,12 @@ public class ThirdScreen extends JFrame implements ActionListener {
         	
             if(query.checkCertificate(this.path, this.secret.getText(), AuthenticationUser.getLogin())) {  
                 this.dispose();
+                
+            	query.RegisterLog(AuthenticationUser.getLogin(), null , 4003);
+            	query.RegisterLog(AuthenticationUser.getLogin(), null , 4002);
                 InterfaceController.startForthScreen(AuthenticationUser.getLogin(),
                 AuthenticationUser.getLogin(),
                 AuthenticationUser.getGroup());
-                query.RegisterLog(AuthenticationUser.getLogin(), null , 4003);
             }else {
                 JOptionPane.showMessageDialog(null, "Assinatura ou chave secreta inválida",
                         "Acess denied", JOptionPane.INFORMATION_MESSAGE);

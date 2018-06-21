@@ -8,18 +8,21 @@ import java.security.PrivateKey;
 
 public class UserFileAccessor {
 
-	private String secretName = null;
-	private String fileName = null;
+	private String secretName;
+	private String fileName;
 
-	private void createFile ( byte[] fileContent, String fileContentLocation ) {
+	private void createFile ( byte[] fileContent, String fileContentLocation, String _secretName ) {
 
-		String path = fileContentLocation.substring(0, fileContentLocation.lastIndexOf("/")).concat("/" + secretName);
-		File f = new File(path);
+		//String path = fileContentLocation.substring(0, fileContentLocation.lastIndexOf("/")).concat("/" + _secretName);
+		
+		String path = fileContentLocation.substring(0, fileContentLocation.lastIndexOf("\\"));
+		String path2 = path.concat("\\" + _secretName + ".enc");
+		File f = new File(path2);
 		f.getParentFile().mkdirs();
 		FileOutputStream fos = null;
 		try {
 			f.createNewFile();
-			fos = new FileOutputStream(path);
+			fos = new FileOutputStream(path2);
 			fos.write(fileContent);
 			fos.close();
 		} catch ( IOException e ) {
@@ -30,26 +33,26 @@ public class UserFileAccessor {
 	
 	public boolean checkFileAccess ( String fileRow, String user, String userGroup ) {
 
-		String fileOwner = fileRow.substring(fileRow.indexOf(" "), fileRow.lastIndexOf(" ")).trim();
-		fileOwner = fileOwner.substring(fileOwner.indexOf(" ")).trim();
+		String ownerFile = fileRow.substring(fileRow.indexOf(" "), fileRow.lastIndexOf(" ")).trim();
+		ownerFile = ownerFile.substring(ownerFile.indexOf(" ")).trim();
 		String fileGroup = fileRow.substring(fileRow.lastIndexOf(" ")).replace("\n", "").trim();
 		
-		if(fileOwner.equals(user) || fileGroup.equals(userGroup)) {
-			secretName = fileRow.substring(fileRow.indexOf(" ")).trim();
-			secretName = secretName.substring(0, secretName.indexOf(" ")).trim();
-			fileName = fileRow.substring(0, fileRow.indexOf(" ")).trim();
+		if(ownerFile.equals(user) || fileGroup.equals(userGroup)) {
+			this.secretName = fileRow.substring(fileRow.indexOf(" ")).trim();
+			this.secretName = secretName.substring(0, secretName.indexOf(" ")).trim();
+			this.fileName = fileRow.substring(0, fileRow.indexOf(" ")).trim();
 			return true;
 		}
-		System.err.println("[ERROR-USER FILE ACCESS] User has no permition to access file");
+		System.err.println("User has no permition to access file");
 
 		return false;
 	}
 
-	public boolean accessFile ( PrivateKey privateKey, CertificateController cr, String folderLocation ) {
+	public boolean accessFile ( PrivateKey privateKey, CertificateController cr, String folderLocation, String fileSelected) {
 
 		FileContentRetriever fcr = new FileContentRetriever(privateKey, cr.getPublicKey());
-
-		String fileEnc = folderLocation.substring(0, folderLocation.lastIndexOf("/")).concat("/" + fileName + ".enc");
+		String onlyFileName = fileSelected.substring(0,fileSelected.indexOf(" "));
+		String fileEnc = folderLocation.substring(0, folderLocation.lastIndexOf("\\")).concat("\\" + onlyFileName + ".enc");
 		String fileEnv = fileEnc.replace(".enc", ".env");
 		String fileAsd = fileEnc.replace(".enc", ".asd");
 		
@@ -61,7 +64,8 @@ public class UserFileAccessor {
 				return false;
 
 			// Creating new file
-			createFile(fileContent, fileEnc);
+			String[] secretName = fileSelected.split("\\s+");
+			createFile(fileContent, folderLocation, "new_"+secretName[0]);
 		}
 		else {
 			System.out.println("[ERROR-USER FILE ACCESS] File's integrity and authenticity compromised");

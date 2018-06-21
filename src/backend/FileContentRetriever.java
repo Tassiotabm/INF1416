@@ -57,13 +57,13 @@ public class FileContentRetriever {
 			if(!result)
 				encData = null;
 		} catch ( NoSuchAlgorithmException e) {
-			System.err.println("[ERROR-FILE CONTENT RETRIEVE] Non-existing algorithm for Signature: MD5withRSA");
+			System.err.println("Non-existing algorithm for Signature: MD5withRSA");
 			return false; // TODO
 		} catch ( InvalidKeyException e ) {
-			System.err.println("[ERROR-FILE CONTENT RETRIEVE] Invalid key used in Signature");
+			System.err.println("Invalid key used in Signature");
 			return false;
 		} catch ( SignatureException e ) {
-			System.err.println("[ERROR-FILE CONTENT RETRIEVE] Problem with update data expected OR verifying signature in Signature\nFile: " + encLocation);
+			System.err.println("Problem with update data expected OR verifying signature in Signature\nFile: " + encLocation);
 			return false;
 		}
 
@@ -80,7 +80,7 @@ public class FileContentRetriever {
 		try {
 			content = Files.readAllBytes(path);
 		} catch ( IOException e ) {
-			System.err.println("[ERROR-FILE CONTENT RETRIEVE] Problem to read file in path: " + filePath);
+			System.err.println("Problem to read file in path: " + filePath);
 			System.exit(1);
 		}
 		return content;
@@ -94,19 +94,19 @@ public class FileContentRetriever {
 			cipher.init(Cipher.DECRYPT_MODE, key);
 			decryptedData = cipher.doFinal(data);
 		} catch ( NoSuchAlgorithmException e ) {
-			System.err.println("[ERROR-FILE CONTENT RETRIEVE] Non-existing algorithm for Cipher: " + algorithm);
+			System.err.println("Non-existing algorithm for Cipher: " + algorithm);
 			return null;// TODO
 		} catch ( NoSuchPaddingException e ) {
-			System.err.println("[ERROR-FILE CONTENT RETRIEVE] Non-existing padding for Cipher: " + algorithm);
+			System.err.println("Non-existing padding for Cipher: " + algorithm);
 			return null;
 		} catch ( InvalidKeyException e ) {
-			System.err.println("[ERROR-FILE CONTENT RETRIEVE] Invalid key used in Cipher: " + DatatypeConverter.printHexBinary(key.getEncoded()));
+			System.err.println("Invalid key used in Cipher: " + DatatypeConverter.printHexBinary(key.getEncoded()));
 			return null;
 		} catch ( IllegalBlockSizeException e ) {
-			System.err.println("[ERROR-FILE CONTENT RETRIEVE] Actual encrypted data byte size (" + Integer.toString(data.length) + ") doesn't match with expected by Cipher");
+			System.err.println("Actual encrypted data byte size (" + Integer.toString(data.length) + ") doesn't match with expected by Cipher");
 			return null;
 		} catch ( BadPaddingException e ) {
-			System.err.println("[ERROR-FILE CONTENT RETRIEVE] Bad padding in data expected by Cipher");
+			System.err.println("Bad padding in data expected by Cipher");
 			e.printStackTrace();
 			return null;
 		}
