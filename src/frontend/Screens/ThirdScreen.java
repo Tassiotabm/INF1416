@@ -27,11 +27,13 @@ public class ThirdScreen extends JFrame implements ActionListener {
     private JTextField txtPath = new JTextField(40);
     private JTextField secret = new JTextField(40);
     private String path;
-
+    private static int count=0;
+    
     public ThirdScreen(IQueryController _query) {
         super();
         query = _query;
-
+        query.RegisterLog(AuthenticationUser.getLogin(), null , 4001);
+        
         this.setLocation(512, 250);
         this.setTitle("Projeto de Seguranca");
         this.setSize(500, 500);
@@ -95,17 +97,28 @@ public class ThirdScreen extends JFrame implements ActionListener {
         } else if (ae.getSource() == btn2) {
         	
             if(query.checkCertificate(this.path, this.secret.getText(), AuthenticationUser.getLogin())) {  
-                this.dispose();
-                
             	query.RegisterLog(AuthenticationUser.getLogin(), null , 4003);
             	query.RegisterLog(AuthenticationUser.getLogin(), null , 4002);
+            	this.dispose();
                 InterfaceController.startForthScreen(AuthenticationUser.getLogin(),
                 AuthenticationUser.getLogin(),
                 AuthenticationUser.getGroup());
+                
             }else {
+            	if(count<2) {
                 JOptionPane.showMessageDialog(null, "Assinatura ou chave secreta inválida",
                         "Acess denied", JOptionPane.INFORMATION_MESSAGE);
                 query.RegisterLog(AuthenticationUser.getLogin(), null , 4006);
+            	}else {
+            		query.RegisterLog(AuthenticationUser.getLogin(), null , 4007);
+            		try {
+						Thread.sleep(60000);
+					} catch (InterruptedException e) {
+						System.out.println("erro no sleep");
+						e.printStackTrace();
+					}
+                	count=0;
+            	}
             }
             
         } else {

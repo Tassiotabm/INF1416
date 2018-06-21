@@ -12,9 +12,6 @@ import java.util.ArrayList;
 
 public class SecondScreen extends JFrame implements ActionListener {
 
-    /**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	
 	private static final String[][] matrix = new String[3][3];
@@ -36,7 +33,7 @@ public class SecondScreen extends JFrame implements ActionListener {
         
         query = _query;
         query.RegisterLog(AuthenticationUser.getLogin(), null , 3001);
-
+        
         initializeFonemas();
 
         this.setLocation(512, 250);
@@ -132,12 +129,12 @@ public class SecondScreen extends JFrame implements ActionListener {
             } else {
                 if (count<2) {
                 	if(count==0)
-                		query.RegisterLog(AuthenticationUser.getLogin(), null , 3004);
-                	
+                		query.RegisterLog(AuthenticationUser.getLogin(), null , 3004);                	
                 	else if(count==1)
                 		query.RegisterLog(AuthenticationUser.getLogin(), null , 3005);
                 	
 	            	query.RegisterLog(AuthenticationUser.getLogin(), null , 4003);
+
 	                JOptionPane.showMessageDialog(null, "Senha incorreta",
 	                        "Access denied", JOptionPane.INFORMATION_MESSAGE);
 	                count++;
@@ -146,7 +143,8 @@ public class SecondScreen extends JFrame implements ActionListener {
                 else {
                 	JOptionPane.showMessageDialog(null, "Você errou a senha 3 vezes\nEspere 3 minutos para tentar novamente.\n",
 	                        "Access denied", JOptionPane.INFORMATION_MESSAGE);
-            
+                	query.RegisterLog(AuthenticationUser.getLogin(), null , 3006);
+                	query.RegisterLog(AuthenticationUser.getLogin(), null , 3007);
                 	try {
 						Thread.sleep(60000);
 					} catch (InterruptedException e) {

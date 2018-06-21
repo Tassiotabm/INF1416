@@ -7,6 +7,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.*;
 import backend.QueryController.IQueryController;
+
 import frontend.AuthenticationUser;
 import frontend.InterfaceController;
 
@@ -41,6 +42,7 @@ public class FirstScreen extends JFrame implements ActionListener {
         loginframe.setVisible(true);
         loginframe.setLocationRelativeTo(null);
         loginframe.setDefaultCloseOperation(EXIT_ON_CLOSE);
+        query.RegisterLog(login, null, 2001);
     }
 
     public void actionPerformed(ActionEvent e) {
@@ -56,6 +58,7 @@ public class FirstScreen extends JFrame implements ActionListener {
                     AuthenticationUser.setLogin(login);
                     InterfaceController.startSecondScreen();
                 } else {
+                	query.RegisterLog(login, null, 2005);
                     JOptionPane.showMessageDialog(null, "Login Incorreto",
                             "Acess denied", JOptionPane.INFORMATION_MESSAGE);
                 }
